@@ -30,7 +30,7 @@ _(For now, if there's more than one emulator running, it will reboot all of them
 #### B. Manual Installation
 
 1. Copy the `cold-reboot` script to a destination of your choice
-2. Add `path/to/the/script` (chosen in step 3.) to your `PATH` env variable
+2. Add `path/to/the/script` (chosen in step 1.) to your `PATH` env variable
 
 Contributing
 ------------
