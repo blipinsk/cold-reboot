@@ -16,14 +16,21 @@ _(For now, if there's more than one emulator running, it will reboot all of them
 
 ## Installation
 
-(*The installation process is kind of manual for now, but will be improved in the future. The goal is to be able to install this script with `brew`*)
-
 1. Make sure you've got `python` (at least 2.7)
 2. Add `<your_path_to_android_sdk>/tools` to your `PATH` env variable
 3. Add `<your_path_to_android_sdk>/platform-tools` to your `PATH` env variable
 4. Add `<your_path_to_android_sdk>/emulator` to your `PATH` env variable
-5. Copy the `cold-reboot` script to a destination of your choice
-6. Add `path/to/the/script` (chosen in step 3.) to your `PATH` env variable
+5. Choose option **A.** or **B.**
+
+#### A. Installation using Homebrew
+
+1. `brew tap blipinsk/cold-reboot`
+2. `brew install cold-reboot`
+
+#### B. Manual Installation
+
+1. Copy the `cold-reboot` script to a destination of your choice
+2. Add `path/to/the/script` (chosen in step 3.) to your `PATH` env variable
 
 Contributing
 ------------
