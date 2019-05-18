@@ -16,70 +16,71 @@
 
 import os
 import sys
+
 from time import sleep
 
-def verifyPythonVersion():
+def verify_python_version():
     major = sys.version_info[0]
     minor = sys.version_info[1]
 
     if (major < 2) or (major == 2 and minor < 7) :
         raise Exception("Must be using Python >=2.7")
 
-def getRunningEmulatorsNames():
+def get_running_emulator_names():
     devices = check_output(["adb", "devices"]).split('\n')
 
-    def onlyEmulatorRows(device):
+    def only_emulator_rows(device):
         if "emulator" in device:
             return True
         else:
             return False
 
-    def toEmulatorName(emulatorRow):
-        nameEnd = emulatorRow.index('\t')
-        return emulatorRow[:nameEnd]
+    def to_emulator_name(emulator_row):
+        name_End = emulator_row.index('\t')
+        return emulator_row[:name_End]
 
-    emulatorRows = filter(onlyEmulatorRows, devices)
-    return map(toEmulatorName, emulatorRows)
+    emulator_rows = filter(only_emulator_rows, devices)
+    return map(to_emulator_name, emulator_rows)
 
-def mapToEmulatorInfo(runningEmulators):
-    def toEmulatorInfo(emulator):
+def map_to_emulator_info(running_emulators):
+    def to_emulator_info(emulator):
         return EmulatorInfo(emulator)
 
-    return map(toEmulatorInfo, runningEmulators)
+    return map(to_emulator_info, running_emulators)
 
-def coldRebootEmulators(runningAvdEmulators):
+def cold_reboot_emulators(running_avd_emulators):
     FNULL = open(os.devnull, 'w')
 
-    for emu in runningAvdEmulators:
-        print("Found emulator: " + emu.emulatorName + " "+ emu.avdName)
-        Popen(["adb", "-s", emu.emulatorName, "emu", "kill"], stdout=FNULL, stderr=STDOUT)
+    for emu in running_avd_emulators:
+        print("Emulator found: " + emu.emulator_name + " "+ emu.avd_name)
+        Popen(["adb", "-s", emu.emulator_name, "emu", "kill"], stdout=FNULL, stderr=STDOUT)
         print("Cold rebooting...")
         sleep(1.0) #we're waiting for killing emulators
-        Popen(["emulator", "@" + emu.avdName, "-no-snapshot-load"], stdout=FNULL, stderr=STDOUT)
+        Popen(["emulator", "@" + emu.avd_name, "-no-snapshot-load"], stdout=FNULL, stderr=STDOUT)
 
 
 class EmulatorInfo:
 
-    def __init__(self, emulatorName):
-        self.emulatorName = emulatorName
-        self.avdName = self.resolveAvdName()
+    def __init__(self, emulator_name):
+        self.emulator_name = emulator_name
+        self.avd_name = self.resolve_avd_name()
 
-    def resolveAvdName(self):
-        def onlyAvdName(avdNameRow):
-            if avdNameRow=='OK':
+    def resolve_avd_name(self):
+        def only_avd_name(avd_name_row):
+            if avd_name_row=='OK':
                 return False
             else:
                 return True
 
-        avdNameRows = check_output(["adb", "-s", self.emulatorName, "emu", "avd", "name"]).strip().split('\n')
-        return filter(onlyAvdName, avdNameRows)[0].strip()
+        avd_name_rows = check_output(["adb", "-s", self.emulator_name, "emu", "avd", "name"]).strip().split('\n')
+        return filter(only_avd_name, avd_name_rows)[0].strip()
 
 # ------------
 
-verifyPythonVersion()
+verify_python_version()
 
 from subprocess import check_output, Popen, PIPE, STDOUT
 
-runningEmulators = getRunningEmulatorsNames()
-runningAvdEmulators = mapToEmulatorInfo(runningEmulators)
-coldRebootEmulators(runningAvdEmulators)
+running_emulators = get_running_emulator_names()
+running_avd_emulators = map_to_emulator_info(running_emulators)
+cold_reboot_emulators(running_avd_emulators)
